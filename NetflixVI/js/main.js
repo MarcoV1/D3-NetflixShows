@@ -87,6 +87,26 @@ function drawPieChart() {
         total += dict[key];
     }
 
+    //Pie chart drawing animation
+    function tweenPie(finish) {
+        var start = {
+            startAngle: 0,
+            endAngle: 0
+        };
+        var interpolator = d3.interpolate(start, finish);
+        return function (d) { return arc(interpolator(d)); };
+    }
+
+    //Add labels only at the end
+    function checkEndAll(transition, callback) {
+        var n = 0;
+        transition
+            .each(function () { ++n; })
+            .on("end", function () {
+                if (!--n) callback.apply(this, arguments);
+            });
+    }
+
     console.log("Total " + total);
 
     var width = 540,
@@ -97,8 +117,13 @@ function drawPieChart() {
         .outerRadius(radius - 10)
         .innerRadius(0);
 
+    var arcOver = d3.arc()
+        .innerRadius(0)
+        .outerRadius(150 + 10);
+
     var pie = d3.pie()
         .sort(null)
+        .padAngle(.01)
         .value(function (d) {
             console.log("Pie chart");
             return dict[d];
@@ -136,19 +161,35 @@ function drawPieChart() {
         })
         .on("mouseout", function (d) {
             svg.select(".label").remove();
-        });
-
-
-    g.append("text")
-        .attr("transform", function (d) {
-            var _d = arc.centroid(d);
-            _d[0] *= 2.2;	//multiply by a constant factor
-            _d[1] *= 2.2;	//multiply by a constant factor
-            return "translate(" + _d + ")";
         })
-        .attr("dy", ".50em")
-        .style("text-anchor", "middle")
-        .text(function (d) {
-            return (d.value / total) + '%';
+        .on("mouseenter", function (d) {
+            d3.select(this)
+                .attr("stroke", "white")
+                .transition()
+                .duration(1000)
+                .attr("d", arcOver)
+                .attr("stroke-width", 6);
+        })
+        .on("mouseleave", function (d) {
+            d3.select(this).transition()
+                .attr("d", arc)
+                .attr("stroke", "none");
+        })
+        .transition()
+        .duration(2000)
+        .attrTween('d', tweenPie)
+        .call(checkEndAll, function () {
+            g.append("text")
+                .attr("transform", function (d) {
+                    var _d = arc.centroid(d);
+                    _d[0] *= 2.2;	//multiply by a constant factor
+                    _d[1] *= 2.2;	//multiply by a constant factor
+                    return "translate(" + _d + ")";
+                })
+                .attr("dy", ".50em")
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    return (d.value / total) + '%';
+                });
         });
 }
