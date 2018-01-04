@@ -1,6 +1,8 @@
 // parameters
 var shows = 'Netflix Shows.csv';
 var data;
+var id = 0;
+var dict = {};
 
 window.onload = function () { // do when page is loaded
     start();
@@ -10,15 +12,16 @@ function start() {
 
 
     // load data set
-    d3.csv(shows, getData, function(loadedData){
+    d3.csv(shows, getData, function (loadedData) {
         data = loadedData;
         console.log(loadedData);
         afterLoad();
+
+        //PIE CHART FOR AGES
+        drawPieChart();
     });
 }
 
-
-var id = 0;
 // obter os dados do csv
 function getData(item) {
     // distinguir os diferentes tipos de rating e associar a idade para cada um
@@ -66,11 +69,86 @@ function getData(item) {
         console.warn('Falta este rating:', item['rating']);
     }
 
-
+    if (!(item.minAge in dict)) {
+        dict[item.minAge] = 1;
+    }
+    else {
+        dict[item.minAge] = dict[item.minAge] + 1;
+    }
 }
 
-
-function afterLoad(){
-
+function afterLoad() {
     console.log('Initialization finished!');
+}
+
+function drawPieChart() {
+    var total = 0;
+    for (var key in dict) {
+        total += dict[key];
+    }
+
+    console.log("Total " + total);
+
+    var width = 540,
+        height = 540,
+        radius = 200;
+
+    var arc = d3.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(0);
+
+    var pie = d3.pie()
+        .sort(null)
+        .value(function (d) {
+            console.log("Pie chart");
+            return dict[d];
+        });
+
+    var svg = d3.select('body').append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var g = svg.selectAll(".arc")
+        .data(pie(Object.keys(dict)))
+        .enter().append("g");
+
+    g.append("path")
+        .attr("d", arc)
+        .style("fill", '#8149c6')
+        .on("mouseover", function (d) {
+            svg.append("text")
+                .attr("dy", ".5em")
+                .style("text-anchor", "middle")
+                .style("font-size", 45)
+                .attr("class", "label")
+                .style("fill", "black")
+                .text(function () {
+                    if (d.data != 0) {
+                        return "Minimun Age " + d.data + " years old!\n" + d.value + " tv shows!";
+                    }
+                    else {
+                        return "For All Ages!\n" + d.value + " tv shows!";
+                    }
+                });
+
+        })
+        .on("mouseout", function (d) {
+            svg.select(".label").remove();
+        });
+
+
+    g.append("text")
+        .attr("transform", function (d) {
+            var _d = arc.centroid(d);
+            _d[0] *= 2.2;	//multiply by a constant factor
+            _d[1] *= 2.2;	//multiply by a constant factor
+            return "translate(" + _d + ")";
+        })
+        .attr("dy", ".50em")
+        .style("text-anchor", "middle")
+        .text(function (d) {
+            return (d.value / total) + '%';
+        });
 }
