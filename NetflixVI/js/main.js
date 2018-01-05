@@ -109,6 +109,8 @@ function drawPieChart() {
 
     console.log("Total " + total);
 
+    var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"]
+
     var width = 540,
         height = 540,
         radius = 200;
@@ -141,7 +143,9 @@ function drawPieChart() {
 
     g.append("path")
         .attr("d", arc)
-        .style("fill", '#8149c6')
+        .style("fill", function (d) {
+            return colors[d.index];
+        })
         .on("mouseover", function (d) {
             svg.append("text")
                 .attr("dy", ".5em")
