@@ -36,6 +36,11 @@ html {
     text-shadow: none;
 }
 
+.scoreGraph {
+    height: calc(100% - 87px);
+    vertical-align: middle;
+}
+
 /*
  * A better looking default horizontal rule
  */

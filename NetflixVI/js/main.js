@@ -81,6 +81,14 @@ function afterLoad() {
     console.log('Initialization finished!');
 }
 
+function createScoreGraph()
+{
+    console.log('score graph');
+
+
+
+}
+
 function drawPieChart() {
     var total = 0;
     for (var key in dict) {
@@ -131,7 +139,7 @@ function drawPieChart() {
             return dict[d];
         });
 
-    var svg = d3.select('body').append("svg")
+    var svg = d3.select('#pieChart').append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
@@ -155,7 +163,7 @@ function drawPieChart() {
                 .style("fill", "black")
                 .text(function () {
                     if (d.data != 0) {
-                        return "Minimun Age " + d.data + " years old!\n" + d.value + " tv shows!";
+                        return "Minimum Age " + d.data + " years old!\n" + d.value + " tv shows!";
                     }
                     else {
                         return "For All Ages!\n" + d.value + " tv shows!";
