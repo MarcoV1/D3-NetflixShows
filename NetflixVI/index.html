@@ -6,13 +6,11 @@
         <title>Netflix Shows Explorer</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="manifest" href="site.webmanifest">
+        <link rel="stylesheet" href="css/bootstrap.css" />
+        <link rel="stylesheet" href="CSS/bootstrap.dark.css" type="text/css" />
         <link rel="icon" sizes="192x192" href="netflix.png">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
-
         <script src="d3/d3.js"></script>
 
     </head>
@@ -46,17 +44,39 @@
 
 
                 </div>
-
             </aside>
         </div>
     </main>
 
-    <h2 style="text-align: center; padding-top: 100px">Rating Chart</h2>
-    <h3 style="text-align: center">Total number of shows: 1000</h3>
-    <div id="pieChart" style="height: 150px; width: 150px; margin-left: 400px; display: block; "></div>
+    <div style="padding-top: 150px"></div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span><h2 style="text-align: center">Rating Chart</h2></span>
+                    </div>
+                    <div class="panel-body">
+                        <h3 id="ttt" style="text-align: center">Total number of shows: 1000</h3>
 
-        <script src="js/vendor/modernizr-3.5.0.min.js"></script>
+                        <div>
+                            <div id="pieChart" style="float: left; margin: auto"></div>
+
+                            <div style="float: right; margin-top: 150px; margin-right: 250px">
+                                <h3 id="ageText"></h3>
+                                <h3 id="showsText"></h3>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/vendor/modernizr-3.5.0.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>

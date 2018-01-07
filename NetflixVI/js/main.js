@@ -88,16 +88,15 @@ function afterLoad() {
     console.log('Initialization finished!');
     console.log(titles);
     console.log(scores);
-    console.log(years);
+}   console.log(years);
 
-}
 
 function createScoreGraph() {
     console.log('score graph');
 
 
-
 }
+
 
 function drawPieChart() {
     var total = 0;
@@ -124,8 +123,6 @@ function drawPieChart() {
                 if (!--n) callback.apply(this, arguments);
             });
     }
-
-    console.log("Total " + total);
 
     var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"]
 
@@ -168,15 +165,20 @@ function drawPieChart() {
             svg.append("text")
                 .attr("dy", ".5em")
                 .style("text-anchor", "middle")
-                .style("font-size", 45)
+                .style("font-size", 66)
                 .attr("class", "label")
                 .style("fill", "black")
                 .text(function () {
                     if (d.data != 0) {
-                        return "Minimum Age " + d.data + " years old!\n" + d.value + " tv shows!";
+                        $("#ageText").text("Minimum age:  " + d.data);
+                        $("#showsText").text("Number of shows:  " + d.value);
+
+                       // return "Minimum Age " + d.data + " years old!\n" + "There's " + d.value + " tv shows!";
                     }
                     else {
-                        return "For All Ages!\n" + d.value + " tv shows!";
+                        $("#ageText").text("No minimum age.  ");
+                        $("#showsText").text("Number of shows:  " + d.value);
+                      //  return "For All Ages!\nThere's " + d.value + " tv shows!";
                     }
                 });
 
@@ -210,8 +212,9 @@ function drawPieChart() {
                 })
                 .attr("dy", ".50em")
                 .style("text-anchor", "middle")
+                .style("fill", "white")
                 .text(function (d) {
-                    return (d.value / total) + '%';
+                    return parseFloat((d.value / total) * 100 ).toFixed(2) + '%';
                 });
         });
 }
