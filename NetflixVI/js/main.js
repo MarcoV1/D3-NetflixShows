@@ -4,6 +4,10 @@ var data;
 var id = 0;
 var dict = {};
 
+var scores = [];
+var years = [];
+var titles = [];
+
 window.onload = function () { // do when page is loaded
     start();
 };
@@ -75,14 +79,20 @@ function getData(item) {
     else {
         dict[item.minAge] = dict[item.minAge] + 1;
     }
+    titles.push(item['title']);
+    scores.push(item['user rating score']);
+    years.push(item['release year']);
 }
 
 function afterLoad() {
     console.log('Initialization finished!');
+    console.log(titles);
+    console.log(scores);
+    console.log(years);
+
 }
 
-function createScoreGraph()
-{
+function createScoreGraph() {
     console.log('score graph');
 
 
