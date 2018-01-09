@@ -8,7 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="css/bootstrap.css" />
         <link rel="stylesheet" href="CSS/bootstrap.dark.css" type="text/css" />
-        <link rel="icon" sizes="192x192" href="netflix.png">
+        <link rel="icon" sizes="192x192" href="img/netflix.png">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <script src="d3/d3.js"></script>
@@ -20,33 +20,72 @@
         <nav class="navbar navbar-default">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a href="#"><img class="top-logo navbar-brand" src="netflix.png" style="height: 60px"></a>
+                    <a href="#"><img class="top-logo navbar-brand" src="img/netflix.png" style="height: 60px"></a>
                     <a class="navbar-brand page-title" href="#" style="padding-top: 19px">Netflix Shows Statistics</a>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container-fluid">
-        <div id="mainRow" class="row full-height">
-            <aside id="leftFilters" class="filter-area col-xs-2 full-height">
-                <div id="leftFiltersContainer">
-                    <h3>Filters</h3>
-                    <div id="visibleMoviesCounter"></div>
-                    <div class="filterContainer">
-                        <h5>Minimum Age</h5>
-                        <div id="minimumAgeSlider"></div>
-                    </div>
-                    <div class="filterContainer">
-                        <h5>Score</h5>
-                        <div id="scoreSlider"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span><h2 style="text-align: center">Shows Chart</h2></span>
                     </div>
 
+                    <div class="panel-body">
+
+                    <div id="mainRow" style="padding-top: 30px" class="row full-height">
+                        <aside id="leftFilters" class="filter-area col-xs-2 full-height">
+                            <div id="leftFiltersContainer">
+                                <h3>Filters</h3>
+                                <div id="visibleMoviesCounter"></div>
+                                <div class="filterContainer">
+                                    <h5>Minimum Age</h5>
+                                    <div id="minimumAgeSlider"></div>
+                                </div>
+                                <div class="filterContainer">
+                                    <h5>Score</h5>
+                                    <div id="scoreSlider"></div>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <section id="centralScatterplotArea" class="col-xs-7 full-height no-padding">
+                            <div id="scatterPlot" style="height: 450px" class="scatterPlot">
+                            </div>
+                            <div id="yearFilter" class="yearFilter filter-area">
+                                <div class="filterContainer">
+                                    <h5>Year</h5>
+                                    <div id="yearSlider"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <aside id="rightFilters" class="filter-area col-xs-3 full-height .text-center">
+                            <div class="rightSidebarInfos">
+                                <div id="movieInfos">
+                                    <h3 id="movieTitle"></h3>
+                                    <table id="movieInfosTable" >
+                                        <tr ><th id="t1">Year</th><td style="padding-left: 15px" id="tableYear"></td></tr>
+                                        <tr ><th id="t2">Rating</th><td style="padding-left: 18px" id="tableRating"></td></tr>
+                                        <tr ><th id="t3">Score</th><td style="padding-left: 17px" id="tableScore"></td></tr>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </aside>
+                    </div>
+                    </div>
 
                 </div>
-            </aside>
+            </div>
         </div>
-    </main>
+    </div>
+
 
     <div style="padding-top: 150px"></div>
 
