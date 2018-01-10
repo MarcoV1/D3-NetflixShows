@@ -3,10 +3,7 @@ var shows = 'Netflix Shows.csv';
 var data, items;
 var id = 0;
 var dict = {};
-var scores = [];
-var years = [];
-var titles = [];
-var ratings = [];
+var scores = [], years = [], titles = [], ratings = [], sliders=[];
 var scatterPlot;
 var scatterPlotWidth;
 var scatterPlotHeight;
@@ -19,12 +16,13 @@ var scatterPlotY; // scaling function in y direction
 var scatterPlotColors; // scaling function to map genre to color
 var currentlySelectedMovie;
 var previouslySelectedMovie;
-var transition;
+var transition, filterLimits, initialFilterLimits;
 var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"];
 
 d3.select('#t1').style('visibility', 'hidden');
 d3.select('#t2').style('visibility', 'hidden');
 d3.select('#t3').style('visibility', 'hidden');
+d3.select('#t4').style('visibility', 'hidden');
 
 window.onload = function () { // do when page is loaded
     start();
@@ -32,21 +30,74 @@ window.onload = function () { // do when page is loaded
 
 function start() {
 
-
     // load data set
     d3.csv(shows, getData, function (loadedData) {
-
         data = loadedData;
         console.log(loadedData);
-        afterLoad();
 
-        transition = d3.transition().duration(850).delay(100);
-
+        transition = d3.transition().duration(700).delay(50);
+        filterOptions();
         createScoreGraph();
         drawPieChart();
 
-        updateScatterplot();
+        createSliders();
+        updateScatterplot(data);
     });
+}
+
+function numberFormatter(digits){
+    return {
+        to: function(value){return value.toFixed(digits);},
+        from: function(value){return +value;}
+    }
+}
+
+function update()
+{
+    var updatedData =
+        data.filter(function(d) {
+            for(var property in filterLimits){
+               // console.log(property);
+                if(filterLimits.hasOwnProperty(property)){
+                    if(((!filterLimits[property].showAboveAndBelow || +filterLimits[property].max!==+initialFilterLimits[property].max)
+                            && d[property]>filterLimits[property].max)
+                        || ((!filterLimits[property].showAboveAndBelow||+filterLimits[property].min!==+initialFilterLimits[property].min)
+                            && d[property]<filterLimits[property].min)){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+    console.log(updatedData)
+    updateScatterplot(updatedData);
+}
+
+function filterOptions()
+{
+    filterLimits = {
+        minAge:{
+            min: 0,
+            max: 18,
+            showAboveAndBelow: true,
+            numberFormatFunction: numberFormatter(0)
+        },
+        score:{
+            min: 0,
+            max: 100,
+            showAboveAndBelow: false,
+            numberFormatFunction: numberFormatter(1)
+        },
+        year:{
+            min:1970,
+            max:2018,
+            showAboveAndBelow: false,
+            numberFormatFunction: numberFormatter(0)
+        }
+
+    };
+    initialFilterLimits = JSON.parse(JSON.stringify(filterLimits));
+
 }
 
 var id = 0;
@@ -130,14 +181,6 @@ function getData(item) {
     return item;
 }
 
-function afterLoad() {
-    console.log('Initialization finished!');
-    console.log(titles);
-    console.log(scores);
-    console.log(years);
-    console.log(ratings);
-}
-
 function d3Zoom() {
     scatterPlot.attr('transform', d3.event.transform);
 }
@@ -190,29 +233,21 @@ function createScoreGraph() {
         .attr('x', -scatterPlotHeight / 2) // x and y are swapped due to rotation
         .attr('y', scatterPlotMarginX[0] - 54)
         .style("font-weight", "bold")
-        .attr('transform', 'rotate(-90)')
         .style("fill", "black")
-
         .text('Year');
 
     scatterPlot.append('g').attr('id', 'dataContainer');
 
 }
 
-// tells d3 if two objects are the same. Comparable to Java equals function but only returns a key
 function keyFunction(d) {
-    // return d['movie_title'];
-    // return d['imdb_score']+d['num_voted_users']+'.'+d['duration'];
     return d.id;
 }
 
-function updateScatterplot() {
+function updateScatterplot(updatedData) {
 
-    var updatedData = data;
-    // add items to scatter plot
     var rectsExistingYet = scatterPlot.select('#dataContainer').selectAll('rect')
-        .data(updatedData,
-        keyFunction);
+        .data(updatedData, keyFunction);
 
     // remove filtered items
     rectsExistingYet.exit()
@@ -225,27 +260,20 @@ function updateScatterplot() {
         })
         .remove();
 
-    // d3.select('#id'+d.id).append()
-    console.log("here");
-
     // update all still visible items
     rectsExistingYet
         .attr('fill', function (d) {
             if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
-                return 'black';
+                return 'opacity';
             }
         })
         .attr('opacity', function (d) {
             if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
-                return 0.68;
+                return 0.5;
             } else { // currently selected
                 return 1;
             }
         });
-    // d3.select('#id'+d.id).append()
-
-    console.log("here");
-
     // add new items
     var newlyAddedRects = rectsExistingYet.enter().append('rect');
     newlyAddedRects
@@ -256,23 +284,18 @@ function updateScatterplot() {
             return scatterPlotY(d['year']);
         })
         .attr('width', function () {
-            // return d.famousness;
             return 0; // transition is handling this (see below)
         })
         .attr('height', function () {
-            // return d['famousness'];
             return 0; // transition is handling this (see below)
         })
         .attr('id', function (d) {
             return 'id' + d.id; // ids must begin with a letter
         })
         .attr('stroke-width', function (d) {
-            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
-                //return Math.min(Math.max(1.0, d['famousness'] / 10), 2.0);
+            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) {
                 return Math.min(Math.max(1, 10), 3);
-            } else { // currently selected
-                console.log('Fat stroke width: ', d);
-                //  return 3*Math.min(Math.max(1.0, d['famousness'] / 10), 2.0);
+            } else {
                 return Math.min(Math.max(1, 10), 3);
             }
         })
@@ -308,15 +331,15 @@ function updateScatterplot() {
             d3.select(this).transition().duration(300)
                 .attr('width', function (d) { return Math.max(minSizeOnHover, 2 * Math.max(5, 9)); })
                 .attr('height', function (d) { return Math.max(minSizeOnHover, 2 * Math.max(5, 9)); })
-                .attr('x', function (d) { return scatterPlotX(d['score']) - Math.max(minSizeOnHover / 2, 9) / 2; })
-                .attr('y', function (d) { return scatterPlotY(d['year']) - Math.max(minSizeOnHover / 2, 9) / 2; })
+                .attr('x', function (d) { return scatterPlotX(d['score']) - Math.max(minSizeOnHover / 2, 8) / 2; })
+                .attr('y', function (d) { return scatterPlotY(d['year']) - Math.max(minSizeOnHover / 2, 8) / 2; })
                 .attr('rx', function (d) { // roundness of corners
                 });
         })
         .on('mouseout', function () {
             d3.select(this).transition().duration(300)
-                .attr('width', function (d) { return Math.max(5, 9); })
-                .attr('height', function (d) { return Math.max(5, 9); })
+                .attr('width', function (d) { return Math.max(6, 6); })
+                .attr('height', function (d) { return Math.max(6, 6); })
                 .attr('x', function (d) { return scatterPlotX(d['score']); })
                 .attr('y', function (d) { return scatterPlotY(d['year']); })
 
@@ -324,44 +347,84 @@ function updateScatterplot() {
         .on('click', function (d) {
             console.log('Clicked on ', d);
             currentlySelectedMovie = d;
-            update();
+            updateDetails();
         })
         .transition(transition)
         .attr('width', function (d) {
             // return Math.max(5,d.famousness);
-            return Math.max(5, 7);
+            return Math.max(5, 5);
         })
         .attr('height', function (d) {
             // return Math.max(5,d.famousness);
-            return Math.max(5, 7);
+            return Math.max(5, 5);
         });
 
     var newLine = '\r\n';
     newlyAddedRects.append('svg:title')
         .text(function (d) { return d['title'] + ' (' + d['year'] + ')' + newLine + d['score']; });
-    console.log(newlyAddedRects);
 
     d3.select('#visibleMoviesCounter').text('Shows shown: ' + (rectsExistingYet._groups[0].length));
 
-    //   updateSidebar();
-
 }
 
-function update() {
+function updateDetails() {
     if (currentlySelectedMovie !== undefined && previouslySelectedMovie !== currentlySelectedMovie) {
         previouslySelectedMovie = currentlySelectedMovie;
 
         d3.select('#t1').style('visibility', 'visible');
         d3.select('#t2').style('visibility', 'visible');
         d3.select('#t3').style('visibility', 'visible');
+        d3.select('#t4').style('visibility', 'visible');
 
         d3.select('#movieInfos').attr('class', 'visible');
         d3.select('#movieTitle').text(currentlySelectedMovie['title']);
         d3.select('#tableYear').text(currentlySelectedMovie['year']);
         d3.select('#tableRating').text(currentlySelectedMovie['rating']);
         d3.select('#tableScore').text(currentlySelectedMovie['score']);
-
+        d3.select('#tableAge').text(currentlySelectedMovie['minAge']);
     }
+}
+
+function createSliders() {
+
+    createSlider('yearSlider','year');
+    createSlider('scoreSlider','score');
+    createSlider('minimumAgeSlider','minAge');
+
+}
+function createSlider(container, dataFieldName){
+
+    var slider = document.getElementById(container);
+
+    sliders[dataFieldName] = slider;
+
+    noUiSlider.create(slider, {
+        start: [ filterLimits[dataFieldName].min, filterLimits[dataFieldName].max ],
+        range: {
+            'min': [  filterLimits[dataFieldName].min ],
+            'max': [ filterLimits[dataFieldName].max ]
+        },
+        tooltips: [filterLimits[dataFieldName].numberFormatFunction, filterLimits[dataFieldName].numberFormatFunction]
+    });
+    var i=0;
+
+    var timeOfLastUpdate = 0;
+    slider.noUiSlider.on('update',function (values, handle) {
+        i++;
+        var thisValue = i;
+        // console.log('Update requested:',filterLimits[dataFieldName].min,filterLimits[dataFieldName].max,handle,i);
+        filterLimits[dataFieldName].min = values[0];
+        filterLimits[dataFieldName].max = values[1];
+        setTimeout(function(){
+            if(i==thisValue || (new Date()).getTime()-timeOfLastUpdate>700){
+                timeOfLastUpdate = (new Date()).getTime();
+                update();
+            }
+        },150);
+    });
+
+
+
 }
 
 function drawPieChart() {

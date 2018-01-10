@@ -11,6 +11,7 @@
         <link rel="icon" sizes="192x192" href="img/netflix.png">
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/nouislider.min.css">
         <script src="d3/d3.js"></script>
 
     </head>
@@ -42,13 +43,13 @@
                             <div id="leftFiltersContainer">
                                 <h3>Filters</h3>
                                 <div id="visibleMoviesCounter"></div>
-                                <div class="filterContainer">
-                                    <h5>Minimum Age</h5>
+                                <div class="filterContainer" style="padding-top: 50px;">
                                     <div id="minimumAgeSlider"></div>
+                                    <h4 style="text-align: center;">Minimum Age</h4>
                                 </div>
-                                <div class="filterContainer">
-                                    <h5>Score</h5>
-                                    <div id="scoreSlider"></div>
+                                <div class="filterContainer" style="padding-top: 40px">
+                                    <div id="yearSlider"></div>
+                                    <h4 style="text-align: center;">Year</h4>
                                 </div>
                             </div>
                         </aside>
@@ -57,9 +58,10 @@
                             <div id="scatterPlot" style="height: 450px" class="scatterPlot">
                             </div>
                             <div id="yearFilter" class="yearFilter filter-area">
-                                <div class="filterContainer">
-                                    <h5>Year</h5>
-                                    <div id="yearSlider"></div>
+                                <div class="filterContainer" style="padding-top: 20px">
+                                    <div id="scoreSlider"></div>
+                                    <h4 style="text-align: center; vertical-align: middle">Adjust Score</h4>
+
                                 </div>
                             </div>
                         </section>
@@ -70,12 +72,13 @@
                                     <h3 id="movieTitle"></h3>
                                     <table id="movieInfosTable" >
                                         <tr ><th id="t1">Year</th><td style="padding-left: 15px" id="tableYear"></td></tr>
-                                        <tr ><th id="t2">Rating</th><td style="padding-left: 18px" id="tableRating"></td></tr>
                                         <tr ><th id="t3">Score</th><td style="padding-left: 17px" id="tableScore"></td></tr>
+                                        <tr ><th id="t2">Rating</th><td style="padding-left: 17px" id="tableRating"></td></tr>
+                                        <tr ><th id="t4">Minimum Age</th><td style="padding-left: 17px" id="tableAge"></td></tr>
+
+
                                     </table>
-
                                 </div>
-
                             </div>
                         </aside>
                     </div>
@@ -86,8 +89,7 @@
         </div>
     </div>
 
-
-    <div style="padding-top: 150px"></div>
+    <div style="padding-top: 100px"></div>
 
     <div class="container">
         <div class="row">
@@ -115,11 +117,10 @@
         </div>
     </div>
 
+    <script src="js/nouislider.min.js"></script>
     <script src="js/vendor/modernizr-3.5.0.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')</script>
-        <script src="js/plugins.js"></script>
-        <script src="js/main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="js/main.js"></script>
 
     </body>
 </html>
