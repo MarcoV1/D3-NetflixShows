@@ -10,20 +10,21 @@ var ratings = [];
 var scatterPlot;
 var scatterPlotWidth;
 var scatterPlotHeight;
-var scatterPlotDomainY = [2017,1970]; // range do ano
-var scatterPlotDomainX = [0,100]; // range dos scores
-var scatterPlotMarginX = [70,50];
-var scatterPlotMarginY = [50,50];
+var scatterPlotDomainY = [2017, 1970]; // range do ano
+var scatterPlotDomainX = [0, 100]; // range dos scores
+var scatterPlotMarginX = [70, 50];
+var scatterPlotMarginY = [50, 50];
 var scatterPlotX; // scaling function in x direction
 var scatterPlotY; // scaling function in y direction
 var scatterPlotColors; // scaling function to map genre to color
 var currentlySelectedMovie;
 var previouslySelectedMovie;
 var transition;
+var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"];
 
-d3.select('#t1').style('visibility','hidden');
-d3.select('#t2').style('visibility','hidden');
-d3.select('#t3').style('visibility','hidden');
+d3.select('#t1').style('visibility', 'hidden');
+d3.select('#t2').style('visibility', 'hidden');
+d3.select('#t3').style('visibility', 'hidden');
 
 window.onload = function () { // do when page is loaded
     start();
@@ -104,13 +105,13 @@ function getData(item) {
     }
 
     // set year to 0 if missing
-    if(item['release year']===''){
+    if (item['release year'] === '') {
         item.year = 0;
     }
     else
         item.year = +item['release year'];
 
-    if(item['user rating score']==='NA'){
+    if (item['user rating score'] === 'NA') {
         item.score = 0;
     }
     else
@@ -143,8 +144,8 @@ function d3Zoom() {
 function createScoreGraph() {
 
     scatterPlot = d3.select('#scatterPlot').append('svg')
-        .attr('width','100%')
-        .attr('height','100%')
+        .attr('width', '100%')
+        .attr('height', '100%')
         .style("fill", "white")
         .style("background-color", 'white');
 
@@ -158,7 +159,7 @@ function createScoreGraph() {
         .attr('width', '100%')
         .attr('height', '100%')
         .style("fill", "none")
-    scatterPlot = scatterPlot.append('g').attr('id','thisIsTheContainerForEverything');
+    scatterPlot = scatterPlot.append('g').attr('id', 'thisIsTheContainerForEverything');
 
     // calculate scale
     scatterPlotWidth = d3.select('#scatterPlot').node().getBoundingClientRect().width;
@@ -176,7 +177,7 @@ function createScoreGraph() {
     scatterPlot.append('g').attr('transform', 'translate(' + originX + ',' + 0 + ')').call(yAxis);
     // axis labels
     scatterPlot.append('text')
-    // .attr('class', 'x label')
+        // .attr('class', 'x label')
         .attr('text-anchor', 'end')
         .attr('x', scatterPlotWidth / 2)
         .style("fill", "black")
@@ -184,7 +185,7 @@ function createScoreGraph() {
         .attr('y', scatterPlotHeight - scatterPlotMarginY[1] + 40)
         .text('Score');
     scatterPlot.append('text')
-    // .attr('class', 'y label')
+        // .attr('class', 'y label')
         .attr('text-anchor', 'end')
         .attr('x', -scatterPlotHeight / 2) // x and y are swapped due to rotation
         .attr('y', scatterPlotMarginX[0] - 54)
@@ -194,32 +195,32 @@ function createScoreGraph() {
 
         .text('Year');
 
-    scatterPlot.append('g').attr('id','dataContainer');
+    scatterPlot.append('g').attr('id', 'dataContainer');
 
 }
 
 // tells d3 if two objects are the same. Comparable to Java equals function but only returns a key
-function keyFunction(d){
+function keyFunction(d) {
     // return d['movie_title'];
     // return d['imdb_score']+d['num_voted_users']+'.'+d['duration'];
     return d.id;
 }
 
-function updateScatterplot(){
+function updateScatterplot() {
 
     var updatedData = data;
     // add items to scatter plot
     var rectsExistingYet = scatterPlot.select('#dataContainer').selectAll('rect')
         .data(updatedData,
-            keyFunction);
+        keyFunction);
 
-// remove filtered items
+    // remove filtered items
     rectsExistingYet.exit()
         .transition(transition)
-        .attr('width', function(d){
+        .attr('width', function (d) {
             return 0;
         })
-        .attr('height', function(d){
+        .attr('height', function (d) {
             return 0;
         })
         .remove();
@@ -229,13 +230,13 @@ function updateScatterplot(){
 
     // update all still visible items
     rectsExistingYet
-        .attr('fill', function(d){
-            if (currentlySelectedMovie===undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
+        .attr('fill', function (d) {
+            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
                 return 'black';
             }
         })
-        .attr('opacity', function(d) {
-            if (currentlySelectedMovie===undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
+        .attr('opacity', function (d) {
+            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
                 return 0.68;
             } else { // currently selected
                 return 1;
@@ -248,93 +249,113 @@ function updateScatterplot(){
     // add new items
     var newlyAddedRects = rectsExistingYet.enter().append('rect');
     newlyAddedRects
-        .attr('x', function(d) {
+        .attr('x', function (d) {
             return scatterPlotX(d['score']);
         })
-        .attr('y', function(d) {
+        .attr('y', function (d) {
             return scatterPlotY(d['year']);
         })
-        .attr('width', function(){
+        .attr('width', function () {
             // return d.famousness;
             return 0; // transition is handling this (see below)
         })
-        .attr('height', function(){
+        .attr('height', function () {
             // return d['famousness'];
             return 0; // transition is handling this (see below)
         })
-        .attr('id', function(d) {
-            return 'id'+d.id; // ids must begin with a letter
+        .attr('id', function (d) {
+            return 'id' + d.id; // ids must begin with a letter
         })
-        .attr('stroke-width', function(d) {
-            if (currentlySelectedMovie===undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
+        .attr('stroke-width', function (d) {
+            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
                 //return Math.min(Math.max(1.0, d['famousness'] / 10), 2.0);
-                return Math.min(Math.max(1,10),3);
+                return Math.min(Math.max(1, 10), 3);
             } else { // currently selected
-                console.log('Fat stroke width: ',d);
-              //  return 3*Math.min(Math.max(1.0, d['famousness'] / 10), 2.0);
-                return Math.min(Math.max(1,10),3);
+                console.log('Fat stroke width: ', d);
+                //  return 3*Math.min(Math.max(1.0, d['famousness'] / 10), 2.0);
+                return Math.min(Math.max(1, 10), 3);
             }
         })
-        .attr('fill', function(){
-            return 'black';
+        .attr('stroke', function (d) { // color
+            if (d.minAge == 0) {
+                return colors[0];
+            }
+            if (d.minAge == 6) {
+                return colors[1];
+            }
+            if (d.minAge == 7) {
+                return colors[2];
+            }
+            if (d.minAge == 12) {
+                return colors[3];
+            }
+            if (d.minAge == 13) {
+                return colors[4];
+            }
+            if (d.minAge == 14) {
+                return colors[5];
+            }
+            if (d.minAge == 17) {
+                return colors[6];
+            }
+            if (d.minAge == 18) {
+                return colors[7];
+            }
         })
-        // .attr('stroke', function(d){ // color
-        //     return scatterPlotColors(d['genreColor']);
-        // })
-        .on('mouseover', function(){
+        .attr("stroke-width", 1)
+        .on('mouseover', function () {
             var minSizeOnHover = 15; // 15 pixel minimum size of items when hovered
             d3.select(this).transition().duration(300)
-                .attr('width', function(d){return Math.max(minSizeOnHover,2*Math.max(5,9));})
-                .attr('height', function(d){return Math.max(minSizeOnHover,2*Math.max(5,9));})
-                .attr('x', function(d) {return scatterPlotX(d['score'])-Math.max(minSizeOnHover/2,9)/2;})
-                .attr('y', function(d) {return scatterPlotY(d['year'])-Math.max(minSizeOnHover/2,9)/2;})
-                .attr('rx', function(d) { // roundness of corners
+                .attr('width', function (d) { return Math.max(minSizeOnHover, 2 * Math.max(5, 9)); })
+                .attr('height', function (d) { return Math.max(minSizeOnHover, 2 * Math.max(5, 9)); })
+                .attr('x', function (d) { return scatterPlotX(d['score']) - Math.max(minSizeOnHover / 2, 9) / 2; })
+                .attr('y', function (d) { return scatterPlotY(d['year']) - Math.max(minSizeOnHover / 2, 9) / 2; })
+                .attr('rx', function (d) { // roundness of corners
                 });
         })
-        .on('mouseout', function(){
+        .on('mouseout', function () {
             d3.select(this).transition().duration(300)
-                .attr('width', function(d){return Math.max(5,9);})
-                .attr('height', function(d){return Math.max(5,9);})
-                .attr('x', function(d) {return scatterPlotX(d['score']);})
-                .attr('y', function(d) {return scatterPlotY(d['year']);})
+                .attr('width', function (d) { return Math.max(5, 9); })
+                .attr('height', function (d) { return Math.max(5, 9); })
+                .attr('x', function (d) { return scatterPlotX(d['score']); })
+                .attr('y', function (d) { return scatterPlotY(d['year']); })
 
         })
-        .on('click', function(d){
-            console.log('Clicked on ',d);
+        .on('click', function (d) {
+            console.log('Clicked on ', d);
             currentlySelectedMovie = d;
             update();
         })
         .transition(transition)
-        .attr('width', function(d){
-           // return Math.max(5,d.famousness);
-            return Math.max(5,7);
+        .attr('width', function (d) {
+            // return Math.max(5,d.famousness);
+            return Math.max(5, 7);
         })
-        .attr('height', function(d){
-           // return Math.max(5,d.famousness);
-            return Math.max(5,7);
+        .attr('height', function (d) {
+            // return Math.max(5,d.famousness);
+            return Math.max(5, 7);
         });
 
     var newLine = '\r\n';
     newlyAddedRects.append('svg:title')
-        .text(function(d) { return d['title']+' ('+d['year']+')'+newLine+d['score']; });
+        .text(function (d) { return d['title'] + ' (' + d['year'] + ')' + newLine + d['score']; });
     console.log(newlyAddedRects);
 
-    d3.select('#visibleMoviesCounter').text('Shows shown: '+(rectsExistingYet._groups[0].length));
+    d3.select('#visibleMoviesCounter').text('Shows shown: ' + (rectsExistingYet._groups[0].length));
 
- //   updateSidebar();
+    //   updateSidebar();
 
 }
 
-function update()
-{
-    if(currentlySelectedMovie!==undefined && previouslySelectedMovie !== currentlySelectedMovie){
+function update() {
+    if (currentlySelectedMovie !== undefined && previouslySelectedMovie !== currentlySelectedMovie) {
         previouslySelectedMovie = currentlySelectedMovie;
 
-        d3.select('#t1').style('visibility','visible');
-        d3.select('#t2').style('visibility','visible');
-        d3.select('#t3').style('visibility','visible');
+        d3.select('#t1').style('visibility', 'visible');
+        d3.select('#t2').style('visibility', 'visible');
+        d3.select('#t3').style('visibility', 'visible');
 
-        d3.select('#movieInfos').attr('class','visible');
+        d3.select('#movieInfos').attr('class', 'visible');
         d3.select('#movieTitle').text(currentlySelectedMovie['title']);
         d3.select('#tableYear').text(currentlySelectedMovie['year']);
         d3.select('#tableRating').text(currentlySelectedMovie['rating']);
@@ -366,7 +387,6 @@ function drawPieChart() {
                 if (!--n) callback.apply(this, arguments);
             });
     }
-    var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"]
     var width = 540,
         height = 540,
         radius = 200;
@@ -414,12 +434,12 @@ function drawPieChart() {
                         $("#ageText").text("Minimum age:  " + d.data);
                         $("#showsText").text("Number of shows:  " + d.value);
 
-                       // return "Minimum Age " + d.data + " years old!\n" + "There's " + d.value + " tv shows!";
+                        // return "Minimum Age " + d.data + " years old!\n" + "There's " + d.value + " tv shows!";
                     }
                     else {
                         $("#ageText").text("No minimum age.  ");
                         $("#showsText").text("Number of shows:  " + d.value);
-                      //  return "For All Ages!\nThere's " + d.value + " tv shows!";
+                        //  return "For All Ages!\nThere's " + d.value + " tv shows!";
                     }
                 });
 
@@ -455,7 +475,7 @@ function drawPieChart() {
                 .style("text-anchor", "middle")
                 .style("fill", "white")
                 .text(function (d) {
-                    return parseFloat((d.value / total) * 100 ).toFixed(2) + '%';
+                    return parseFloat((d.value / total) * 100).toFixed(2) + '%';
                 });
         });
 }
