@@ -4,19 +4,13 @@ var data, items;
 var id = 0;
 var dict = {};
 var scores = [], years = [], titles = [], ratings = [], sliders=[];
-var scatterPlot;
-var scatterPlotWidth;
-var scatterPlotHeight;
+var scatterPlot, scatterPlotW, scatterPlotH;
 var scatterPlotDomainY = [2017, 1970]; // range do ano
 var scatterPlotDomainX = [0, 100]; // range dos scores
 var scatterPlotMarginX = [70, 50];
 var scatterPlotMarginY = [50, 50];
-var scatterPlotX; // scaling function in x direction
-var scatterPlotY; // scaling function in y direction
-var scatterPlotColors; // scaling function to map genre to color
-var currentlySelectedMovie;
-var previouslySelectedMovie;
-var transition, filterLimits, initialFilterLimits;
+var scatterPlotX, scatterPlotY, spColors, currentMovie, previousMovie;
+var transition, filterL, initFilter;
 var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"];
 
 d3.select('#t1').style('visibility', 'hidden');
@@ -29,7 +23,6 @@ window.onload = function () { // do when page is loaded
 };
 
 function start() {
-
     // load data set
     d3.csv(shows, getData, function (loadedData) {
         data = loadedData;
@@ -45,59 +38,29 @@ function start() {
     });
 }
 
-function numberFormatter(digits){
-    return {
-        to: function(value){return value.toFixed(digits);},
-        from: function(value){return +value;}
-    }
-}
-
-function update()
-{
-    var updatedData =
-        data.filter(function(d) {
-            for(var property in filterLimits){
-               // console.log(property);
-                if(filterLimits.hasOwnProperty(property)){
-                    if(((!filterLimits[property].showAboveAndBelow || +filterLimits[property].max!==+initialFilterLimits[property].max)
-                            && d[property]>filterLimits[property].max)
-                        || ((!filterLimits[property].showAboveAndBelow||+filterLimits[property].min!==+initialFilterLimits[property].min)
-                            && d[property]<filterLimits[property].min)){
-                        return false;
-                    }
-                }
-            }
-            return true;
-        });
-    console.log(updatedData)
-    updateScatterplot(updatedData);
-}
-
-function filterOptions()
-{
-    filterLimits = {
+function filterOptions()  {
+    filterL = {
         minAge:{
             min: 0,
             max: 18,
-            showAboveAndBelow: true,
+            showBoolean: true,
             numberFormatFunction: numberFormatter(0)
         },
         score:{
             min: 0,
             max: 100,
-            showAboveAndBelow: false,
+            showBoolean: false,
             numberFormatFunction: numberFormatter(1)
         },
         year:{
             min:1970,
             max:2018,
-            showAboveAndBelow: false,
+            showBoolean: false,
             numberFormatFunction: numberFormatter(0)
         }
 
     };
-    initialFilterLimits = JSON.parse(JSON.stringify(filterLimits));
-
+    initFilter = JSON.parse(JSON.stringify(filterL));
 }
 
 var id = 0;
@@ -205,11 +168,11 @@ function createScoreGraph() {
     scatterPlot = scatterPlot.append('g').attr('id', 'thisIsTheContainerForEverything');
 
     // calculate scale
-    scatterPlotWidth = d3.select('#scatterPlot').node().getBoundingClientRect().width;
-    scatterPlotHeight = d3.select('#scatterPlot').node().getBoundingClientRect().height;
-    scatterPlotX = d3.scaleLinear().domain(scatterPlotDomainX).range([scatterPlotMarginX[0], scatterPlotWidth - scatterPlotMarginX[1]]);
-    scatterPlotY = d3.scaleLinear().domain(scatterPlotDomainY).range([scatterPlotMarginY[0], scatterPlotHeight - scatterPlotMarginY[1]]);
-    scatterPlotColors = d3.scaleOrdinal(d3.schemeCategory20);
+    scatterPlotW = d3.select('#scatterPlot').node().getBoundingClientRect().width;
+    scatterPlotH = d3.select('#scatterPlot').node().getBoundingClientRect().height;
+    scatterPlotX = d3.scaleLinear().domain(scatterPlotDomainX).range([scatterPlotMarginX[0], scatterPlotW - scatterPlotMarginX[1]]);
+    scatterPlotY = d3.scaleLinear().domain(scatterPlotDomainY).range([scatterPlotMarginY[0], scatterPlotH - scatterPlotMarginY[1]]);
+    spColors = d3.scaleOrdinal(d3.schemeCategory20);
 
     // axis
     var xAxis = d3.axisBottom(scatterPlotX);
@@ -222,22 +185,21 @@ function createScoreGraph() {
     scatterPlot.append('text')
         // .attr('class', 'x label')
         .attr('text-anchor', 'end')
-        .attr('x', scatterPlotWidth / 2)
+        .attr('x', scatterPlotW / 2)
         .style("fill", "black")
         .style("font-weight", "bold")
-        .attr('y', scatterPlotHeight - scatterPlotMarginY[1] + 40)
+        .attr('y', scatterPlotH - scatterPlotMarginY[1] + 40)
         .text('Score');
     scatterPlot.append('text')
-        // .attr('class', 'y label')
         .attr('text-anchor', 'end')
-        .attr('x', -scatterPlotHeight / 2) // x and y are swapped due to rotation
-        .attr('y', scatterPlotMarginX[0] - 54)
+        .attr('x', -190)
+        .attr('transform', 'rotate(270 -10 10)')
+        .attr('y', scatterPlotMarginX[0] - 30)
         .style("font-weight", "bold")
         .style("fill", "black")
         .text('Year');
 
     scatterPlot.append('g').attr('id', 'dataContainer');
-
 }
 
 function keyFunction(d) {
@@ -263,12 +225,12 @@ function updateScatterplot(updatedData) {
     // update all still visible items
     rectsExistingYet
         .attr('fill', function (d) {
-            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
+            if (currentMovie === undefined || currentMovie.id !== d.id) { // currently not selected
                 return 'opacity';
             }
         })
         .attr('opacity', function (d) {
-            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) { // currently not selected
+            if (currentMovie === undefined || currentMovie.id !== d.id) { // currently not selected
                 return 0.5;
             } else { // currently selected
                 return 1;
@@ -293,7 +255,7 @@ function updateScatterplot(updatedData) {
             return 'id' + d.id; // ids must begin with a letter
         })
         .attr('stroke-width', function (d) {
-            if (currentlySelectedMovie === undefined || currentlySelectedMovie.id !== d.id) {
+            if (currentMovie === undefined || currentMovie.id !== d.id) {
                 return Math.min(Math.max(1, 10), 3);
             } else {
                 return Math.min(Math.max(1, 10), 3);
@@ -346,7 +308,7 @@ function updateScatterplot(updatedData) {
         })
         .on('click', function (d) {
             console.log('Clicked on ', d);
-            currentlySelectedMovie = d;
+            currentMovie = d;
             updateDetails();
         })
         .transition(transition)
@@ -368,8 +330,8 @@ function updateScatterplot(updatedData) {
 }
 
 function updateDetails() {
-    if (currentlySelectedMovie !== undefined && previouslySelectedMovie !== currentlySelectedMovie) {
-        previouslySelectedMovie = currentlySelectedMovie;
+    if (currentMovie !== undefined && previousMovie !== currentMovie) {
+        previousMovie = currentMovie;
 
         d3.select('#t1').style('visibility', 'visible');
         d3.select('#t2').style('visibility', 'visible');
@@ -377,11 +339,11 @@ function updateDetails() {
         d3.select('#t4').style('visibility', 'visible');
 
         d3.select('#movieInfos').attr('class', 'visible');
-        d3.select('#movieTitle').text(currentlySelectedMovie['title']);
-        d3.select('#tableYear').text(currentlySelectedMovie['year']);
-        d3.select('#tableRating').text(currentlySelectedMovie['rating']);
-        d3.select('#tableScore').text(currentlySelectedMovie['score']);
-        d3.select('#tableAge').text(currentlySelectedMovie['minAge']);
+        d3.select('#movieTitle').text(currentMovie['title']);
+        d3.select('#tableYear').text(currentMovie['year']);
+        d3.select('#tableRating').text(currentMovie['rating']);
+        d3.select('#tableScore').text(currentMovie['score']);
+        d3.select('#tableAge').text(currentMovie['minAge']);
     }
 }
 
@@ -399,12 +361,12 @@ function createSlider(container, dataFieldName){
     sliders[dataFieldName] = slider;
 
     noUiSlider.create(slider, {
-        start: [ filterLimits[dataFieldName].min, filterLimits[dataFieldName].max ],
+        start: [ filterL[dataFieldName].min, filterL[dataFieldName].max ],
         range: {
-            'min': [  filterLimits[dataFieldName].min ],
-            'max': [ filterLimits[dataFieldName].max ]
+            'min': [  filterL[dataFieldName].min ],
+            'max': [ filterL[dataFieldName].max ]
         },
-        tooltips: [filterLimits[dataFieldName].numberFormatFunction, filterLimits[dataFieldName].numberFormatFunction]
+        tooltips: [filterL[dataFieldName].numberFormatFunction, filterL[dataFieldName].numberFormatFunction]
     });
     var i=0;
 
@@ -412,9 +374,9 @@ function createSlider(container, dataFieldName){
     slider.noUiSlider.on('update',function (values, handle) {
         i++;
         var thisValue = i;
-        // console.log('Update requested:',filterLimits[dataFieldName].min,filterLimits[dataFieldName].max,handle,i);
-        filterLimits[dataFieldName].min = values[0];
-        filterLimits[dataFieldName].max = values[1];
+        // console.log('Update requested:',filterL[dataFieldName].min,filterL[dataFieldName].max,handle,i);
+        filterL[dataFieldName].min = values[0];
+        filterL[dataFieldName].max = values[1];
         setTimeout(function(){
             if(i==thisValue || (new Date()).getTime()-timeOfLastUpdate>700){
                 timeOfLastUpdate = (new Date()).getTime();
@@ -422,9 +384,32 @@ function createSlider(container, dataFieldName){
             }
         },150);
     });
+}
 
+function numberFormatter(digits){
+    return {
+        to: function(value){return value.toFixed(digits);},
+        from: function(value){return +value;}
+    }
+}
 
-
+function update() {
+    var updatedData =
+        data.filter(function(d) {
+            for(var prop in filterL){
+                // console.log(prop);
+                if(filterL.hasOwnProperty(prop)){
+                    if(((!filterL[prop].showBoolean || +filterL[prop].max!==+initFilter[prop].max)
+                            && d[prop]>filterL[prop].max)
+                        || ((!filterL[prop].showBoolean||+filterL[prop].min!==+initFilter[prop].min)
+                            && d[prop]<filterL[prop].min)){
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+    updateScatterplot(updatedData);
 }
 
 function drawPieChart() {
