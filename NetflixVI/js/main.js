@@ -1,17 +1,16 @@
-// parameters
-var shows = 'Netflix Shows.csv';
-var data, items;
+var shows = 'data/Netflix Shows.csv';
+var data;
 var id = 0;
 var dict = {};
 var scores = [], years = [], titles = [], ratings = [], sliders=[];
 var scatterPlot, scatterPlotW, scatterPlotH;
-var scatterPlotDomainY = [2017, 1970]; // range do ano
-var scatterPlotDomainX = [0, 100]; // range dos scores
-var scatterPlotMarginX = [70, 50];
-var scatterPlotMarginY = [50, 50];
-var scatterPlotX, scatterPlotY, spColors, currentMovie, previousMovie;
-var transition, filterL, initFilter;
+var spDomainY = [2017, 1970]; // range do ano
+var spDomainX = [0, 100]; // range dos scores
+var spMarginX = [70, 50];
+var spMarginY = [50, 50];
+var scatterPlotX, scatterPlotY, spColors, currentMovie, previousMovie, transition, filterL, initFilter;
 var colors = ["red", "orange", "yellow", "green", "blue", "cyan", "purple", "pink"];
+var nLine = '\r\n';
 
 d3.select('#t1').style('visibility', 'hidden');
 d3.select('#t2').style('visibility', 'hidden');
@@ -27,14 +26,13 @@ function start() {
     d3.csv(shows, getData, function (loadedData) {
         data = loadedData;
         console.log(loadedData);
-
         transition = d3.transition().duration(700).delay(50);
+
         filterOptions();
         createScoreGraph();
-        drawPieChart();
-
         createSliders();
         updateScatterplot(data);
+        drawPieChart();
     });
 }
 
@@ -165,20 +163,19 @@ function createScoreGraph() {
         .attr('width', '100%')
         .attr('height', '100%')
         .style("fill", "none")
-    scatterPlot = scatterPlot.append('g').attr('id', 'thisIsTheContainerForEverything');
-
+    scatterPlot = scatterPlot.append('g').attr('id', 'idContainer');
     // calculate scale
     scatterPlotW = d3.select('#scatterPlot').node().getBoundingClientRect().width;
     scatterPlotH = d3.select('#scatterPlot').node().getBoundingClientRect().height;
-    scatterPlotX = d3.scaleLinear().domain(scatterPlotDomainX).range([scatterPlotMarginX[0], scatterPlotW - scatterPlotMarginX[1]]);
-    scatterPlotY = d3.scaleLinear().domain(scatterPlotDomainY).range([scatterPlotMarginY[0], scatterPlotH - scatterPlotMarginY[1]]);
+    scatterPlotX = d3.scaleLinear().domain(spDomainX).range([spMarginX[0], scatterPlotW - spMarginX[1]]);
+    scatterPlotY = d3.scaleLinear().domain(spDomainY).range([spMarginY[0], scatterPlotH - spMarginY[1]]);
     spColors = d3.scaleOrdinal(d3.schemeCategory20);
 
     // axis
     var xAxis = d3.axisBottom(scatterPlotX);
     var yAxis = d3.axisLeft(scatterPlotY);
-    var originX = scatterPlotX(scatterPlotDomainX[0]);
-    var originY = scatterPlotY(scatterPlotDomainY[1]); // as y is the other way round (from imdB score 10 to 0)
+    var originX = scatterPlotX(spDomainX[0]);
+    var originY = scatterPlotY(spDomainY[1]); // as y is the other way round (from imdB score 10 to 0)
     scatterPlot.append('g').attr('transform', 'translate(' + 0 + ',' + originY + ')').call(xAxis);
     scatterPlot.append('g').attr('transform', 'translate(' + originX + ',' + 0 + ')').call(yAxis);
     // axis labels
@@ -188,13 +185,13 @@ function createScoreGraph() {
         .attr('x', scatterPlotW / 2)
         .style("fill", "black")
         .style("font-weight", "bold")
-        .attr('y', scatterPlotH - scatterPlotMarginY[1] + 40)
+        .attr('y', scatterPlotH - spMarginY[1] + 40)
         .text('Score');
     scatterPlot.append('text')
         .attr('text-anchor', 'end')
         .attr('x', -190)
         .attr('transform', 'rotate(270 -10 10)')
-        .attr('y', scatterPlotMarginX[0] - 30)
+        .attr('y', spMarginX[0] - 30)
         .style("font-weight", "bold")
         .style("fill", "black")
         .text('Year');
@@ -321,9 +318,8 @@ function updateScatterplot(updatedData) {
             return Math.max(5, 5);
         });
 
-    var newLine = '\r\n';
     newlyAddedRects.append('svg:title')
-        .text(function (d) { return d['title'] + ' (' + d['year'] + ')' + newLine + d['score']; });
+        .text(function (d) { return d['title'] + ' (' + d['year'] + ')' + nLine + d['score']; });
 
     d3.select('#visibleMoviesCounter').text('Shows shown: ' + (rectsExistingYet._groups[0].length));
 
@@ -348,25 +344,22 @@ function updateDetails() {
 }
 
 function createSliders() {
-
     createSlider('yearSlider','year');
     createSlider('scoreSlider','score');
     createSlider('minimumAgeSlider','minAge');
-
 }
-function createSlider(container, dataFieldName){
+function createSlider(container, dataName){
 
     var slider = document.getElementById(container);
-
-    sliders[dataFieldName] = slider;
+    sliders[dataName] = slider;
 
     noUiSlider.create(slider, {
-        start: [ filterL[dataFieldName].min, filterL[dataFieldName].max ],
+        start: [ filterL[dataName].min, filterL[dataName].max ],
         range: {
-            'min': [  filterL[dataFieldName].min ],
-            'max': [ filterL[dataFieldName].max ]
+            'min': [  filterL[dataName].min ],
+            'max': [ filterL[dataName].max ]
         },
-        tooltips: [filterL[dataFieldName].numberFormatFunction, filterL[dataFieldName].numberFormatFunction]
+        tooltips: [filterL[dataName].numberFormatFunction, filterL[dataName].numberFormatFunction]
     });
     var i=0;
 
@@ -374,9 +367,8 @@ function createSlider(container, dataFieldName){
     slider.noUiSlider.on('update',function (values, handle) {
         i++;
         var thisValue = i;
-        // console.log('Update requested:',filterL[dataFieldName].min,filterL[dataFieldName].max,handle,i);
-        filterL[dataFieldName].min = values[0];
-        filterL[dataFieldName].max = values[1];
+        filterL[dataName].min = values[0];
+        filterL[dataName].max = values[1];
         setTimeout(function(){
             if(i==thisValue || (new Date()).getTime()-timeOfLastUpdate>700){
                 timeOfLastUpdate = (new Date()).getTime();
@@ -426,7 +418,6 @@ function drawPieChart() {
         var interpolator = d3.interpolate(start, finish);
         return function (d) { return arc(interpolator(d)); };
     }
-    //Add labels only at the end
     function checkEndAll(transition, callback) {
         var n = 0;
         transition

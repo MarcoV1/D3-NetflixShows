@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f1ec345c-0dfe-4b7e-a6e7-ccc16476561d" name="Default" comment="">
+      <change type="MOVED" beforePath="$PROJECT_DIR$/NetflixVI/Netflix Shows.csv" afterPath="$PROJECT_DIR$/NetflixVI/data/Netflix Shows.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NetflixVI/index.html" afterPath="$PROJECT_DIR$/NetflixVI/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/NetflixVI/js/main.js" afterPath="$PROJECT_DIR$/NetflixVI/js/main.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -21,7 +21,7 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/NetflixVI/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1530">
+            <state relative-caret-position="-102">
               <caret line="90" column="0" lean-forward="true" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
               <folding>
                 <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#div#0;n#nav#0;n#header#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -56,8 +56,8 @@
       <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NetflixVI/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1462">
-              <caret line="412" column="1" lean-forward="false" selection-start-line="412" selection-start-column="1" selection-end-line="412" selection-end-column="1" />
+            <state relative-caret-position="246">
+              <caret line="519" column="1" lean-forward="true" selection-start-line="519" selection-start-column="1" selection-end-line="519" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -90,8 +90,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>d</find>
-      <find>createSca</find>
       <find>197</find>
       <find>zoomed</find>
       <find>transiti</find>
@@ -120,10 +118,13 @@
       <find>property</find>
       <find>scatterPlotW</find>
       <find>filterL</find>
+      <find>scatterPlotMarginY</find>
+      <find>thisIsTheContainerForEverything</find>
     </findStrings>
     <replaceStrings>
       <replace>prop</replace>
       <replace>filterLimit</replace>
+      <replace>spMarginY</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -154,7 +155,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="width" value="1346" />
     <option name="height" value="688" />
@@ -199,6 +200,12 @@
               <item name="D3-NetflixShows" type="b2602c69:ProjectViewProjectNode" />
               <item name="D3-NetflixShows" type="462c0819:PsiDirectoryNode" />
               <item name="NetflixVI" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="D3-NetflixShows" type="b2602c69:ProjectViewProjectNode" />
+              <item name="D3-NetflixShows" type="462c0819:PsiDirectoryNode" />
+              <item name="NetflixVI" type="462c0819:PsiDirectoryNode" />
               <item name="img" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -222,13 +229,14 @@
     <property name="HbShouldOpenHtmlAsHb" value="" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\data" />
+      <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\css" />
+      <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\img" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\js" />
       <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\css" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\css" />
-      <recent name="C:\Users\Marco\Desktop\netflix\D3-NetflixShows\NetflixVI\img" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -267,15 +275,15 @@
       <workItem from="1515512682646" duration="10466000" />
       <workItem from="1515590506532" duration="5266000" />
       <workItem from="1515615997216" duration="57000" />
-      <workItem from="1515681724442" duration="4454000" />
+      <workItem from="1515681724442" duration="4946000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32788000" />
+    <option name="totallyTimeSpent" value="33280000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19765739" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -616,7 +624,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/NetflixVI/Netflix Shows.csv">
+    <entry file="file://$PROJECT_DIR$/NetflixVI/data/Netflix Shows.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="175">
           <caret line="253" column="79" lean-forward="false" selection-start-line="253" selection-start-column="76" selection-end-line="253" selection-end-column="79" />
@@ -667,15 +675,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/NetflixVI/js/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1462">
-          <caret line="412" column="1" lean-forward="false" selection-start-line="412" selection-start-column="1" selection-end-line="412" selection-end-column="1" />
+        <state relative-caret-position="246">
+          <caret line="519" column="1" lean-forward="true" selection-start-line="519" selection-start-column="1" selection-end-line="519" selection-end-column="1" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/NetflixVI/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1530">
+        <state relative-caret-position="-102">
           <caret line="90" column="0" lean-forward="true" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
           <folding>
             <element signature="n#style#0;n#img#0;n#a#0;n#div#0;n#div#0;n#nav#0;n#header#0;n#body#0;n#html#0;n#!!top" expanded="true" />
