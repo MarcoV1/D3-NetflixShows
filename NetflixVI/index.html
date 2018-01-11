@@ -13,10 +13,9 @@
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/nouislider.min.css">
         <script src="d3/d3.js"></script>
-
     </head>
-    <body>
 
+    <body>
     <header>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -35,14 +34,12 @@
                     <div class="panel-heading">
                         <span><h2 style="text-align: center">Shows Chart</h2></span>
                     </div>
-
                     <div class="panel-body">
-
                     <div id="mainRow" style="padding-top: 30px" class="row full-height">
                         <aside id="leftFilters" style="padding-left: 13px" class="filter-area col-xs-2 full-height">
                             <div id="leftFiltersContainer">
                                 <h3>Filters</h3>
-                                <div id="visibleMoviesCounter" style="padding-top: 8px;"></div>
+                                <h4 id="visibleMoviesCounter" style="padding-top: 8px;"></h4>
                                 <div class="filterContainer" style="padding-top: 60px;">
                                     <div id="minimumAgeSlider" style="padding-left: 10px"></div>
                                     <h4 style="text-align: center;">Minimum Age</h4>
@@ -55,7 +52,7 @@
                         </aside>
 
                         <section id="centralScatterplotArea" class="col-xs-7 full-height no-padding">
-                            <div id="scatterPlot" style="height: 450px" class="scatterPlot">
+                            <div id="scatterPlot" style="height: 450px">
                             </div>
                             <div id="yearFilter" class="yearFilter filter-area">
                                 <div class="filterContainer" style="padding-top: 20px">
@@ -75,15 +72,24 @@
                                         <tr ><th id="t3">Score</th><td style="padding-left: 17px" id="tableScore"></td></tr>
                                         <tr ><th id="t2">Rating</th><td style="padding-left: 17px" id="tableRating"></td></tr>
                                         <tr ><th id="t4">Minimum Age</th><td style="padding-left: 17px" id="tableAge"></td></tr>
-
-
                                     </table>
                                 </div>
                             </div>
                         </aside>
-                    </div>
-                    </div>
 
+                        <ul class="legend" style="padding-top: 300px; padding-left: 100px">
+                            <li><span class="zero"></span>Maiores que 0 </li>
+                            <li><span class="six"></span>Maiores que 6</li>
+                            <li><span class="seven"></span> Maiores que 7 </li>
+                            <li><span class="twelve"></span> Maiores que 12</li>
+                            <li><span class="thirteen"></span> Maiores que 13</li>
+                            <li><span class="fourteen"></span> Maiores que 14</li>
+                            <li><span class="seventeen"></span> Maiores que 17</li>
+                            <li><span class="eighteen"></span> Maiores que 18</li>
+
+                        </ul>
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,9 +124,7 @@
     </div>
 
     <script src="js/nouislider.min.js"></script>
-    <script src="js/vendor/modernizr-3.5.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="js/main.js"></script>
-
     </body>
 </html>

@@ -178,9 +178,7 @@ function createScoreGraph() {
     var originY = scatterPlotY(spDomainY[1]); // as y is the other way round (from imdB score 10 to 0)
     scatterPlot.append('g').attr('transform', 'translate(' + 0 + ',' + originY + ')').call(xAxis);
     scatterPlot.append('g').attr('transform', 'translate(' + originX + ',' + 0 + ')').call(yAxis);
-    // axis labels
     scatterPlot.append('text')
-        // .attr('class', 'x label')
         .attr('text-anchor', 'end')
         .attr('x', scatterPlotW / 2)
         .style("fill", "black")
@@ -196,7 +194,7 @@ function createScoreGraph() {
         .style("fill", "black")
         .text('Year');
 
-    scatterPlot.append('g').attr('id', 'dataContainer');
+    scatterPlot.append('g').attr('id','dataContainer');
 }
 
 function keyFunction(d) {
@@ -233,6 +231,7 @@ function updateScatterplot(updatedData) {
                 return 1;
             }
         });
+
     // add new items
     var newlyAddedRects = rectsExistingYet.enter().append('rect');
     newlyAddedRects
@@ -297,8 +296,8 @@ function updateScatterplot(updatedData) {
         })
         .on('mouseout', function () {
             d3.select(this).transition().duration(300)
-                .attr('width', function (d) { return Math.max(6, 6); })
-                .attr('height', function (d) { return Math.max(6, 6); })
+                .attr('width', function (d) { return Math.max(5, 6); })
+                .attr('height', function (d) { return Math.max(5, 6); })
                 .attr('x', function (d) { return scatterPlotX(d['score']); })
                 .attr('y', function (d) { return scatterPlotY(d['year']); })
 
@@ -310,12 +309,10 @@ function updateScatterplot(updatedData) {
         })
         .transition(transition)
         .attr('width', function (d) {
-            // return Math.max(5,d.famousness);
-            return Math.max(5, 5);
+            return Math.max(5, 6);
         })
         .attr('height', function (d) {
-            // return Math.max(5,d.famousness);
-            return Math.max(5, 5);
+            return Math.max(5, 6);
         });
 
     newlyAddedRects.append('svg:title')
