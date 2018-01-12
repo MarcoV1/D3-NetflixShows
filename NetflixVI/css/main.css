@@ -26,10 +26,12 @@ html {
 .legend .zero { background-color: red; margin-left: 15px }
 .legend .six { background-color: orange; margin-left: 9px}
 .legend .seven { background-color: yellow; margin-left: 15px }
+.legend .seven2 { background-color: yellow; margin-left: 18px }
 .legend .twelve { background-color: green; margin-left: 9px }
 .legend .thirteen { background-color: blue;margin-left: 15px }
 .legend .fourteen { background-color: cyan; }
 .legend .seventeen { background-color: purple; margin-left: 15px}
+.legend .seventeen2 { background-color: purple; margin-left: 10px}
 .legend .eighteen { background-color: pink; }
 
 

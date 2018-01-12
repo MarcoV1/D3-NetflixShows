@@ -250,6 +250,7 @@ function updateScatterplot(updatedData) {
         .attr('id', function (d) {
             return 'id' + d.id; // ids must begin with a letter
         })
+        .attr("fill", "transparent")
         .attr('stroke-width', function (d) {
             if (currentMovie === undefined || currentMovie.id !== d.id) {
                 return Math.min(Math.max(1, 10), 3);
@@ -497,7 +498,7 @@ function drawPieChart() {
                 .attr("stroke", "none");
         })
         .transition()
-        .duration(2000)
+        .duration(2200)
         .attrTween('d', tweenPie)
         .call(checkEndAll, function () {
             g.append("text")
